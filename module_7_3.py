@@ -8,12 +8,14 @@ class WordsFinder:
     def get_all_words(self):
         all_words = {}
         for file_name in self.file_names:
-            with open('test.txt', 'r', encoding='utf-8') as file:
+            with open(file_name, 'r', encoding='utf-8') as file:
                 words = []
                 for line in file:
                     line = line.lower()
                     for char in string.punctuation:
                         line = line.replace(char, '')
+                        # Удаляем лишние пробелы
+                    line = ' '.join(line.split())
                     words.extend(line.split())
                 all_words[file_name] = words
         return all_words
@@ -34,7 +36,7 @@ class WordsFinder:
         return counts
 
 # Пример использования
-finder2 = WordsFinder('test_file.txt')
+finder2 = WordsFinder('test.txt')
 print(finder2.get_all_words())
 print(finder2.find('TEXT'))
 print(finder2.count('teXT'))
