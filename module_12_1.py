@@ -9,7 +9,7 @@ class TestRunner(unittest.TestCase):
     @unittest.skipIf(is_frozen, 'Тесты в этом кейсе заморожены')
     def test_run(self):
         try:
-            self.runner = Runner("Test Runner", 50)
+            self.runner = Runner(50)
             for i in range(10):
                 self.runner.run()
             self.assertEqual(self.runner.distance, 1000, 'Test Runner.run() - failed!')
@@ -22,7 +22,7 @@ class TestRunner(unittest.TestCase):
     @unittest.skipIf(is_frozen, 'Тесты в этом кейсе заморожены')
     def test_walk(self):
         try:
-            self.runner = Runner('test', 10)
+            self.runner = Runner('test', -10)
             for i in range(10):
                 self.runner.walk()
             self.assertEqual(self.runner.distance, 100, 'Test Runner.walk() - failed!')
