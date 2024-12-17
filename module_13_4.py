@@ -1,0 +1,75 @@
+import logging
+from aiogram import Bot, Dispatcher, types
+from aiogram.fsm.storage.memory import MemoryStorage
+from aiogram.filters import Command
+from aiogram.fsm.context import FSMContext
+from aiogram.fsm.state import State, StatesGroup
+import asyncio
+
+API_TOKEN = 'BOT_TOKEN'  # Замените на ваш токен
+
+# Настройка логирования
+logging.basicConfig(level=logging.INFO)
+
+# Создание объекта бота и диспетчера
+bot = Bot(token=API_TOKEN)
+storage = MemoryStorage()
+dp = Dispatcher(storage=storage)
+
+
+# Определение состояний
+class UserState(StatesGroup):
+    age = State()
+    growth = State()
+    weight = State()
+
+
+@dp.message(Command("start"))
+async def start_handler(message: types.Message):
+    await message.answer('Привет! Я бот, помогающий твоему здоровью. Напишите "Calories", чтобы начать.')
+
+
+@dp.message(lambda message: message.text.lower() == 'calories')
+async def set_age(message: types.Message, state: FSMContext):
+    await state.set_state(UserState.age)  # Устанавливаем состояние age
+    await message.answer('Введите свой возраст:')
+
+
+@dp.message(UserState.age)
+async def set_growth(message: types.Message, state: FSMContext):
+    await state.update_data(age=message.text)  # Сохраняем возраст
+    await state.set_state(UserState.growth)  # Переходим к состоянию growth
+    await message.answer('Введите свой рост (в см):')
+
+
+@dp.message(UserState.growth)
+async def set_weight(message: types.Message, state: FSMContext):
+    await state.update_data(growth=message.text)  # Сохраняем рост
+    await state.set_state(UserState.weight)  # Переходим к состоянию weight
+    await message.answer('Введите свой вес (в кг):')
+
+
+@dp.message(UserState.weight)
+async def send_calories(message: types.Message, state: FSMContext):
+    await state.update_data(weight=message.text)  # Сохраняем вес
+
+    data = await state.get_data()  # Получаем все сохраненные данные
+    age = int(data['age'])
+    growth = int(data['growth'])
+    weight = int(data['weight'])
+
+    # Формула Миффлина - Сан Жеора для женщин (можно изменить на мужскую формулу)
+    calories = 10 * weight + 6.25 * growth - 5 * age + 5
+
+    await message.answer(f'Ваша норма калорий: {calories:.2f} ккал.')
+
+    await state.clear()  # Завершаем состояние
+
+
+async def main():
+    # Запускаем бота
+    await dp.start_polling(bot)
+
+
+if __name__ == '__main__':
+    asyncio.run(main())
