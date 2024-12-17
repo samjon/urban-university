@@ -6,7 +6,7 @@ from aiogram.fsm.context import FSMContext
 from aiogram.fsm.state import State, StatesGroup
 import asyncio
 
-API_TOKEN = 'BOT_TOKEN'  # Замените на ваш токен
+API_TOKEN = '8187944597:AAE1fXVzEvBdScxsKILL2-jTtvLaMDmZVxQ'  # Замените на ваш токен
 
 # Настройка логирования
 logging.basicConfig(level=logging.INFO)
@@ -16,24 +16,20 @@ bot = Bot(token=API_TOKEN)
 storage = MemoryStorage()
 dp = Dispatcher(storage=storage)
 
-
 # Определение состояний
 class UserState(StatesGroup):
     age = State()
     growth = State()
     weight = State()
 
-
 @dp.message(Command("start"))
 async def start_handler(message: types.Message):
     await message.answer('Привет! Я бот, помогающий твоему здоровью. Напишите "Calories", чтобы начать.')
-
 
 @dp.message(lambda message: message.text.lower() == 'calories')
 async def set_age(message: types.Message, state: FSMContext):
     await state.set_state(UserState.age)  # Устанавливаем состояние age
     await message.answer('Введите свой возраст:')
-
 
 @dp.message(UserState.age)
 async def set_growth(message: types.Message, state: FSMContext):
@@ -41,13 +37,11 @@ async def set_growth(message: types.Message, state: FSMContext):
     await state.set_state(UserState.growth)  # Переходим к состоянию growth
     await message.answer('Введите свой рост (в см):')
 
-
 @dp.message(UserState.growth)
 async def set_weight(message: types.Message, state: FSMContext):
     await state.update_data(growth=message.text)  # Сохраняем рост
     await state.set_state(UserState.weight)  # Переходим к состоянию weight
     await message.answer('Введите свой вес (в кг):')
-
 
 @dp.message(UserState.weight)
 async def send_calories(message: types.Message, state: FSMContext):
@@ -65,11 +59,14 @@ async def send_calories(message: types.Message, state: FSMContext):
 
     await state.clear()  # Завершаем состояние
 
+# Обработчик для всех остальных сообщений
+@dp.message()
+async def all_messages(message: types.Message):
+    await message.answer('Введите команду /start, чтобы начать общение.')
 
 async def main():
     # Запускаем бота
     await dp.start_polling(bot)
-
 
 if __name__ == '__main__':
     asyncio.run(main())
