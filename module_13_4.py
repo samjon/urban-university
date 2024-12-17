@@ -6,7 +6,7 @@ from aiogram.fsm.context import FSMContext
 from aiogram.fsm.state import State, StatesGroup
 import asyncio
 
-API_TOKEN = '8187944597:AAE1fXVzEvBdScxsKILL2-jTtvLaMDmZVxQ'  # Замените на ваш токен
+API_TOKEN = 'BOT_TOKEN'  # Замените на ваш токен
 
 # Настройка логирования
 logging.basicConfig(level=logging.INFO)
