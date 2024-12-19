@@ -7,7 +7,6 @@ from aiogram.fsm.state import State, StatesGroup
 from aiogram.types import ReplyKeyboardMarkup, KeyboardButton, InlineKeyboardMarkup, InlineKeyboardButton, FSInputFile
 import asyncio
 
-
 API_TOKEN = 'BOT_TOKEN'  # Замените на ваш токен
 
 # Настройка логирования
@@ -34,6 +33,15 @@ keyboard = ReplyKeyboardMarkup(
     resize_keyboard=True
 )
 
+# Создание Inline клавиатуры для выбора опций расчета калорий
+def inline_calories_keyboard():
+    return InlineKeyboardMarkup(
+        inline_keyboard=[
+            [InlineKeyboardButton(text='Формулы расчёта', callback_data='formulas')],
+            [InlineKeyboardButton(text='Рассчитать норму калорий', callback_data='calories')]
+        ]
+    )
+
 # Создание Inline клавиатуры для продуктов
 def inline_product_keyboard():
     return InlineKeyboardMarkup(
@@ -54,7 +62,7 @@ async def start_handler(message: types.Message):
 
 @dp.message(lambda message: message.text == 'Рассчитать')
 async def main_menu(message: types.Message):
-    await message.answer('Выберите опцию:', reply_markup=inline_keyboard)
+    await message.answer('Выберите опцию:', reply_markup=inline_calories_keyboard())
 
 @dp.callback_query(lambda call: call.data == 'formulas')
 async def get_formulas(call: types.CallbackQuery):
@@ -99,7 +107,6 @@ async def send_calories(message: types.Message, state: FSMContext):
 @dp.message(lambda message: message.text == 'Информация')
 async def info_handler(message: types.Message):
     await message.answer("Этот бот поможет вам рассчитать норму калорий на основе ваших параметров.")
-
 
 @dp.message(lambda message: message.text == 'Купить')
 async def get_buying_list(message: types.Message):
