@@ -9,7 +9,7 @@ from aiogram.types import ReplyKeyboardMarkup, KeyboardButton, InlineKeyboardMar
 import asyncio
 from crud_functions import initiate_db, get_all_products, add_sample_products
 
-API_TOKEN = '8187944597:AAE1fXVzEvBdScxsKILL2-jTtvLaMDmZVxQ'  # Замените на ваш токен
+API_TOKEN = 'BOT_TOKEN'  # Замените на ваш токен
 
 # Настройка логирования
 logging.basicConfig(level=logging.INFO)
